@@ -13,6 +13,26 @@
     color: #333;
   }
 
+  /* Banner de promoción fijo con parpadeo */
+  #promo-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #FF8C42;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    z-index: 2000;
+    animation: parpadeo 1.5s infinite alternate;
+  }
+  @keyframes parpadeo {
+    from { opacity: 1; }
+    to { opacity: 0.6; }
+  }
+
   header {
     background: linear-gradient(to right, #FF8C42, #FF6F3C);
     color: white;
@@ -23,6 +43,7 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 2px;
+    margin-top: 45px; /* espacio por el banner fijo */
   }
 
   #cart-icon {
@@ -45,7 +66,7 @@
   }
 
   nav {
-    margin: 15px 0;
+    margin: 15px 0 8px;
     text-align: center;
   }
 
@@ -53,7 +74,7 @@
     background: #FF6F3C;
     color: white;
     border: none;
-    margin: 0 8px;
+    margin: 0 8px 8px;
     padding: 10px 18px;
     border-radius: 6px;
     cursor: pointer;
@@ -64,6 +85,17 @@
 
   nav button:hover {
     background: #e65b2a;
+  }
+
+  /* Buscador */
+  .buscador { text-align:center; margin: 0 0 10px; }
+  #search-input {
+    width: 80%;
+    max-width: 420px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) inset;
   }
 
   .productos {
@@ -81,13 +113,34 @@
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     text-align: center;
+    position: relative;
   }
 
+  /* Zoom imágenes */
   .producto img {
     max-width: 100%;
     border-radius: 8px;
     cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
+  .producto img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+
+  /* Etiquetas */
+  .etiqueta {
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:red;
+    color:white;
+    font-size:0.8rem;
+    padding:3px 6px;
+    border-radius:4px;
+    font-weight:bold;
+  }
+  .etiqueta.nuevo { background:green; }
 
   .estrellas {
     margin-top: 8px;
@@ -95,29 +148,55 @@
     font-size: 1.3rem;
   }
 
+  /* Selector cantidad */
+  .cantidad-selector {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:8px 0 4px;
+    gap: 6px;
+  }
+  .cantidad-selector button {
+    padding:4px 10px;
+    border:none;
+    background:#FF6F3C;
+    color:white;
+    font-size:1rem;
+    cursor:pointer;
+    border-radius:6px;
+  }
+  .cantidad-selector input {
+    width:48px;
+    text-align:center;
+    border:1px solid #ccc;
+    border-radius:6px;
+    padding:6px 4px;
+  }
+
+  /* Botón agregar al carrito verde */
   button.agregar-carrito {
-    background: #FF6F3C;
+    background: #28a745;
     color: white;
     padding: 10px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 6px;
     font-weight: bold;
     font-size: 1rem;
     transition: background 0.3s ease;
   }
 
   button.agregar-carrito:hover {
-    background: #e65b2a;
+    background: #218838;
   }
 
-  /* Panel lateral del carrito */
+  /* Panel lateral del carrito (ahora más grande) */
   #cart-panel {
     position: fixed;
     top: 0;
-    right: -400px;
-    width: 350px;
+    right: -450px; /* ancho inicial oculto */
+    width: 450px;   /* ancho aumentado */
     height: 100%;
     background: #fff;
     box-shadow: -2px 0 8px rgba(0,0,0,0.3);
@@ -129,11 +208,8 @@
     overflow: hidden;
   }
 
-  #cart-panel.open {
-    right: 0;
-  }
+  #cart-panel.open { right: 0; }
 
-  /* Título del carrito */
   #cart-title {
     text-align: center;
     font-size: 1.3rem;
@@ -180,9 +256,7 @@
     transition: background 0.3s;
   }
 
-  .cart-item button:hover {
-    background: #d93b3b;
-  }
+  .cart-item button:hover { background: #d93b3b; }
 
   #cart-total {
     padding: 15px;
@@ -231,12 +305,26 @@
     transition: color 0.3s ease;
   }
 
-  footer a:hover {
-    color: #e65b2a;
+  footer a:hover { color: #e65b2a; }
+
+  /* Botón flotante WhatsApp */
+  .whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #25D366;
+    color: white;
+    font-size: 30px;
+    padding: 12px 15px;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    z-index: 3000;
   }
 </style>
 </head>
 <body>
+
+<div id="promo-banner">🎉 ¡Envíos gratis por compras mayores a $50! 🎉</div>
 
 <header>
   LÍNEA FINA GARCÍA
@@ -251,96 +339,253 @@
   <button onclick="mostrarOtros()">Otros</button>
 </nav>
 
-<section class="productos" id="productos">
+<style>
+  .productos-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); /* 6 productos por fila */
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .producto {
+    position: relative;
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    background-color: #fff;
+  }
+
+  .producto img {
+    width: 100%;
+    height: auto;          /* altura automática para ver completa la imagen */
+    max-height: 150px;     /* limita la altura sin recortar */
+    object-fit: contain;    /* mantiene proporción completa */
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+
+  .agregar-carrito {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .cantidad-selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin: 10px 0;
+  }
+
+  .cantidad-selector input {
+    width: 40px;
+    text-align: center;
+  }
+
+  .etiqueta {
+    position: absolute;
+    background-color: #ff6f61;
+    color: white;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    border-radius: 3px;
+    top: 10px;
+    left: 10px;
+  }
+
+  .estrellas {
+    margin-top: 5px;
+    color: #f1c40f;
+    font-size: 1rem;
+  }
+
+  @media screen and (max-width: 1200px) {
+    .productos-container {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .productos-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .productos-container {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="productos-container">
   <!-- Camisas -->
   <article class="producto ropa">
+    <span class="etiqueta">Oferta</span>
     <img src="imagenes/camisa1.jpeg" alt="Camisa1">
-    <h3>Camisa</h3>
+    <h3>Camisa 1</h3>
     <p>$7.00</p>
+    <div class="cantidad-selector">
+      <button onclick="this.nextElementSibling.value=Math.max(1,parseInt(this.nextElementSibling.value)-1)">-</button>
+      <input type="number" value="1" min="1">
+      <button onclick="this.previousElementSibling.value=parseInt(this.previousElementSibling.value)+1">+</button>
+    </div>
     <button class="agregar-carrito" onclick="addToCart('Camisa 1', 7, this)">Agregar al carrito</button>
     <div class="estrellas">★★★★☆</div>
+    <p style="font-size:0.9rem; color:#555; margin:6px 0 0;">⭐⭐⭐⭐⭐ (23 opiniones)</p>
   </article>
+
   <article class="producto ropa">
+    <span class="etiqueta nuevo">Nuevo</span>
     <img src="imagenes/camisa2.jpeg" alt="Camisa2">
-    <h3>Camisa</h3>
+    <h3>Camisa 2</h3>
     <p>$7.00</p>
+    <div class="cantidad-selector">
+      <button onclick="this.nextElementSibling.value=Math.max(1,parseInt(this.nextElementSibling.value)-1)">-</button>
+      <input type="number" value="1" min="1">
+      <button onclick="this.previousElementSibling.value=parseInt(this.previousElementSibling.value)+1">+</button>
+    </div>
     <button class="agregar-carrito" onclick="addToCart('Camisa 2', 7, this)">Agregar al carrito</button>
     <div class="estrellas">★★★★☆</div>
+    <p style="font-size:0.9rem; color:#555; margin:6px 0 0;">⭐⭐⭐⭐ (12 opiniones)</p>
   </article>
+
   <article class="producto ropa">
     <img src="imagenes/camisa3.jpeg" alt="Camisa3">
-    <h3>Camisa</h3>
+    <h3>Camisa 3</h3>
     <p>$7.00</p>
+    <div class="cantidad-selector">
+      <button onclick="this.nextElementSibling.value=Math.max(1,parseInt(this.nextElementSibling.value)-1)">-</button>
+      <input type="number" value="1" min="1">
+      <button onclick="this.previousElementSibling.value=parseInt(this.previousElementSibling.value)+1">+</button>
+    </div>
     <button class="agregar-carrito" onclick="addToCart('Camisa 3', 7, this)">Agregar al carrito</button>
     <div class="estrellas">★★★★☆</div>
+    <p style="font-size:0.9rem; color:#555; margin:6px 0 0;">⭐⭐⭐⭐⭐ (9 opiniones)</p>
   </article>
+
   <article class="producto ropa">
     <img src="imagenes/camisa4.jpeg" alt="Camisa4">
-    <h3>Camisa</h3>
+    <h3>Camisa 4</h3>
     <p>$7.00</p>
+    <div class="cantidad-selector">
+      <button onclick="this.nextElementSibling.value=Math.max(1,parseInt(this.nextElementSibling.value)-1)">-</button>
+      <input type="number" value="1" min="1">
+      <button onclick="this.previousElementSibling.value=parseInt(this.previousElementSibling.value)+1">+</button>
+    </div>
     <button class="agregar-carrito" onclick="addToCart('Camisa 4', 7, this)">Agregar al carrito</button>
     <div class="estrellas">★★★★☆</div>
+    <p style="font-size:0.9rem; color:#555; margin:6px 0 0;">⭐⭐⭐⭐ (6 opiniones)</p>
   </article>
+
   <article class="producto ropa">
     <img src="imagenes/camisa5.jpeg" alt="Camisa5">
-    <h3>Camisa</h3>
+    <h3>Camisa 5</h3>
     <p>$7.00</p>
+    <div class="cantidad-selector">
+      <button onclick="this.nextElementSibling.value=Math.max(1,parseInt(this.nextElementSibling.value)-1)">-</button>
+      <input type="number" value="1" min="1">
+      <button onclick="this.previousElementSibling.value=parseInt(this.previousElementSibling.value)+1">+</button>
+    </div>
     <button class="agregar-carrito" onclick="addToCart('Camisa 5', 7, this)">Agregar al carrito</button>
     <div class="estrellas">★★★★☆</div>
+    <p style="font-size:0.9rem; color:#555; margin:6px 0 0;">⭐⭐⭐⭐⭐ (18 opiniones)</p>
   </article>
+
   <article class="producto ropa">
     <img src="imagenes/camisa6.jpeg" alt="Camisa6">
-    <h3>Camisa</h3>
+    <h3>Camisa 6</h3>
     <p>$7.00</p>
+    <div class="cantidad-selector">
+      <button onclick="this.nextElementSibling.value=Math.max(1,parseInt(this.nextElementSibling.value)-1)">-</button>
+      <input type="number" value="1" min="1">
+      <button onclick="this.previousElementSibling.value=parseInt(this.previousElementSibling.value)+1">+</button>
+    </div>
     <button class="agregar-carrito" onclick="addToCart('Camisa 6', 7, this)">Agregar al carrito</button>
     <div class="estrellas">★★★★☆</div>
-  </article>
-  <article class="producto ropa">
-    <img src="imagenes/camisa7.jpeg" alt="Camisa7">
-    <h3>Camisa</h3>
-    <p>$7.00</p>
-    <button class="agregar-carrito" onclick="addToCart('Camisa 7', 7, this)">Agregar al carrito</button>
-    <div class="estrellas">★★★★☆</div>
+    <p style="font-size:0.9rem; color:#555; margin:6px 0 0;">⭐⭐⭐⭐ (5 opiniones)</p>
   </article>
 
   <!-- Shorts -->
   <article class="producto ropa">
+    <span class="etiqueta">Oferta</span>
     <img src="imagenes/Short1.jpeg" alt="Short1">
-    <h3>Short</h3>
+    <h3>Short 1</h3>
     <p>$6.00</p>
+    <div class="cantidad-selector">
+      <button onclick="this.nextElementSibling.value=Math.max(1,parseInt(this.nextElementSibling.value)-1)">-</button>
+      <input type="number" value="1" min="1">
+      <button onclick="this.previousElementSibling.value=parseInt(this.previousElementSibling.value)+1">+</button>
+    </div>
     <button class="agregar-carrito" onclick="addToCart('Short 1', 6, this)">Agregar al carrito</button>
     <div class="estrellas">★★★★☆</div>
+    <p style="font-size:0.9rem; color:#555; margin:6px 0 0;">⭐⭐⭐⭐ (8 opiniones)</p>
   </article>
+
   <article class="producto ropa">
     <img src="imagenes/Short2.jpeg" alt="Short2">
-    <h3>Short</h3>
+    <h3>Short 2</h3>
     <p>$6.00</p>
+    <div class="cantidad-selector">
+      <button onclick="this.nextElementSibling.value=Math.max(1,parseInt(this.nextElementSibling.value)-1)">-</button>
+      <input type="number" value="1" min="1">
+      <button onclick="this.previousElementSibling.value=parseInt(this.previousElementSibling.value)+1">+</button>
+    </div>
     <button class="agregar-carrito" onclick="addToCart('Short 2', 6, this)">Agregar al carrito</button>
     <div class="estrellas">★★★★☆</div>
+    <p style="font-size:0.9rem; color:#555; margin:6px 0 0;">⭐⭐⭐⭐⭐ (11 opiniones)</p>
   </article>
+
   <article class="producto ropa">
     <img src="imagenes/Short3.jpeg" alt="Short3">
-    <h3>Short</h3>
+    <h3>Short 3</h3>
     <p>$6.00</p>
+    <div class="cantidad-selector">
+      <button onclick="this.nextElementSibling.value=Math.max(1,parseInt(this.nextElementSibling.value)-1)">-</button>
+      <input type="number" value="1" min="1">
+      <button onclick="this.previousElementSibling.value=parseInt(this.previousElementSibling.value)+1">+</button>
+    </div>
     <button class="agregar-carrito" onclick="addToCart('Short 3', 6, this)">Agregar al carrito</button>
     <div class="estrellas">★★★★☆</div>
+    <p style="font-size:0.9rem; color:#555; margin:6px 0 0;">⭐⭐⭐⭐ (7 opiniones)</p>
   </article>
+
   <article class="producto ropa">
     <img src="imagenes/Short4.jpeg" alt="Short4">
-    <h3>Short</h3>
+    <h3>Short 4</h3>
     <p>$6.00</p>
+    <div class="cantidad-selector">
+      <button onclick="this.nextElementSibling.value=Math.max(1,parseInt(this.nextElementSibling.value)-1)">-</button>
+      <input type="number" value="1" min="1">
+      <button onclick="this.previousElementSibling.value=parseInt(this.previousElementSibling.value)+1">+</button>
+    </div>
     <button class="agregar-carrito" onclick="addToCart('Short 4', 6, this)">Agregar al carrito</button>
     <div class="estrellas">★★★★☆</div>
+    <p style="font-size:0.9rem; color:#555; margin:6px 0 0;">⭐⭐⭐⭐⭐ (10 opiniones)</p>
   </article>
+
   <article class="producto ropa">
     <img src="imagenes/Short5.jpeg" alt="Short5">
-    <h3>Short</h3>
+    <h3>Short 5</h3>
     <p>$6.00</p>
+    <div class="cantidad-selector">
+      <button onclick="this.nextElementSibling.value=Math.max(1,parseInt(this.nextElementSibling.value)-1)">-</button>
+      <input type="number" value="1" min="1">
+      <button onclick="this.previousElementSibling.value=parseInt(this.previousElementSibling.value)+1">+</button>
+    </div>
     <button class="agregar-carrito" onclick="addToCart('Short 5', 6, this)">Agregar al carrito</button>
     <div class="estrellas">★★★★☆</div>
+    <p style="font-size:0.9rem; color:#555; margin:6px 0 0;">⭐⭐⭐⭐ (4 opiniones)</p>
   </article>
-</section>
+</div>
 
+</section>
 <!-- Panel lateral del carrito -->
 <div id="cart-panel">
   <button id="close-cart" title="Cerrar carrito">&times;</button>
@@ -383,143 +628,179 @@
     <a href="https://wa.me/50360014234" target="_blank" rel="noopener" aria-label="WhatsApp">
       <i class="fab fa-whatsapp"></i>
     </a>
-    <a href="https://www.facebook.com/tuPerfilFacebook" target="_blank" rel="noopener" aria-label="Facebook">
-      <i class="fab fa-facebook"></i>
-    </a>
   </div>
 </footer>
 
+<!-- Botón flotante de WhatsApp -->
+<a class="whatsapp-float" href="https://wa.me/50360014234" target="_blank" rel="noopener" aria-label="WhatsApp chat">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
 <script>
-  let cart = [];
-  const cartCount = document.getElementById('cart-count');
+  // =========================
+  // CONFIGURACIÓN FIREBASE
+  // =========================
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_AUTH_DOMAIN",
+    projectId: "TU_PROJECT_ID",
+    storageBucket: "TU_STORAGE_BUCKET",
+    messagingSenderId: "TU_MESSAGING_SENDER_ID",
+    appId: "TU_APP_ID"
+  };
+  
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // =========================
+  // CARRITO DE COMPRAS
+  // =========================
   const cartPanel = document.getElementById('cart-panel');
+  const cartIcon = document.getElementById('cart-icon');
+  const closeCartBtn = document.getElementById('close-cart');
   const cartItemsContainer = document.getElementById('cart-items');
-  const cartTotal = document.getElementById('cart-total');
+  const cartTotalEl = document.getElementById('cart-total');
+  const cartCountEl = document.getElementById('cart-count');
 
-  const productosSection = document.getElementById('productos');
-  const contactoSection = document.getElementById('contacto');
-  const otrosSection = document.getElementById('otros');
+  let cart = [];
 
-  function filtrarProductos(categoria) {
-    const productos = document.querySelectorAll('.producto');
-    productos.forEach(p => {
-      p.style.display = (categoria === 'todos' || p.classList.contains(categoria)) ? 'block' : 'none';
-    });
-    contactoSection.style.display = 'none';
-    otrosSection.style.display = 'none';
-    productosSection.style.display = 'grid';
-  }
-
-  function mostrarContacto() {
-    productosSection.style.display = 'none';
-    otrosSection.style.display = 'none';
-    contactoSection.style.display = 'block';
-  }
-
-  function mostrarOtros() {
-    productosSection.style.display = 'none';
-    contactoSection.style.display = 'none';
-    otrosSection.style.display = 'block';
-  }
-
-  function addToCart(nombre, precio, btn) {
-    const item = cart.find(p => p.nombre === nombre);
-    if (item) {
-      item.cantidad++;
-    } else {
-      cart.push({ nombre, precio, cantidad: 1 });
-    }
-    animateFly(btn);
-    updateCartCount();
-    renderCart();
-  }
-
-  function removeFromCart(index) {
-    cart.splice(index, 1);
-    updateCartCount();
-    renderCart();
-  }
-
-  function updateCartCount() {
-    const totalItems = cart.reduce((sum, p) => sum + p.cantidad, 0);
-    cartCount.textContent = totalItems;
-  }
-
-  function renderCart() {
+  function updateCartDisplay() {
     cartItemsContainer.innerHTML = '';
     let total = 0;
     cart.forEach((item, index) => {
-      const subtotal = item.precio * item.cantidad;
-      total += subtotal;
-      const div = document.createElement('div');
-      div.className = 'cart-item';
-      div.innerHTML = `<span>${item.nombre} x${item.cantidad} - $${subtotal.toFixed(2)}</span>
-      <button onclick="removeFromCart(${index})">X</button>`;
-      cartItemsContainer.appendChild(div);
+      const itemEl = document.createElement('div');
+      itemEl.classList.add('cart-item');
+      itemEl.innerHTML = `
+        <span>${item.name} x ${item.quantity} - $${item.price * item.quantity}</span>
+        <button onclick="removeCartItem(${index})">ELIMINAR</button>
+      `;
+      cartItemsContainer.appendChild(itemEl);
+      total += item.price * item.quantity;
     });
-    cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+    cartTotalEl.textContent = 'Total: $' + total.toFixed(2);
+    cartCountEl.textContent = cart.length;
   }
 
-  document.getElementById('cart-icon').addEventListener('click', () => {
-    cartPanel.classList.add('open');
-  });
-  document.getElementById('close-cart').addEventListener('click', () => {
-    cartPanel.classList.remove('open');
-  });
+  function addToCart(name, price, button) {
+    const quantityInput = button.parentElement.querySelector('input');
+    const quantity = parseInt(quantityInput.value);
 
-  function animateFly(btn) {
-    const img = btn.parentElement.querySelector('img');
+    // Imagen voladora
+    const img = button.parentElement.querySelector('img');
     const flyingImg = img.cloneNode();
-    flyingImg.className = 'flying-img';
+    flyingImg.classList.add('flying-img');
+    document.body.appendChild(flyingImg);
     const rect = img.getBoundingClientRect();
     flyingImg.style.top = rect.top + 'px';
     flyingImg.style.left = rect.left + 'px';
-    document.body.appendChild(flyingImg);
-    const cartRect = document.getElementById('cart-icon').getBoundingClientRect();
+
+    const cartRect = cartIcon.getBoundingClientRect();
     setTimeout(() => {
       flyingImg.style.top = cartRect.top + 'px';
       flyingImg.style.left = cartRect.left + 'px';
-      flyingImg.style.width = '0px';
-      flyingImg.style.opacity = '0';
+      flyingImg.style.width = '30px';
     }, 10);
+
     setTimeout(() => {
       flyingImg.remove();
-    }, 1000);
+    }, 800);
+
+    // Agregar al carrito
+    const existingItem = cart.find(item => item.name === name);
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      cart.push({ name, price, quantity });
+    }
+    updateCartDisplay();
   }
 
-  // Lightbox
-  const productImages = document.querySelectorAll('.producto img');
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const lightboxClose = document.getElementById('lightbox-close');
-  const lightboxPrev = document.getElementById('lightbox-prev');
-  const lightboxNext = document.getElementById('lightbox-next');
-  let currentIndex = 0;
+  function removeCartItem(index) {
+    // Borrar también en Firestore si existe
+    const item = cart[index];
+    if(item.id){
+      db.collection('pedidos').doc(item.id).delete();
+    }
+    cart.splice(index, 1);
+    updateCartDisplay();
+  }
 
-  productImages.forEach((img, index) => {
-    img.addEventListener('click', () => {
-      currentIndex = index;
-      lightboxImg.src = img.src;
-      lightbox.style.display = 'flex';
+  // Abrir y cerrar carrito
+  cartIcon.addEventListener('click', () => {
+    cartPanel.classList.add('open');
+  });
+  closeCartBtn.addEventListener('click', () => {
+    cartPanel.classList.remove('open');
+  });
+
+  // Cerrar al hacer clic fuera del panel
+  document.addEventListener('click', (e) => {
+    if (!cartPanel.contains(e.target) && e.target !== cartIcon) {
+      cartPanel.classList.remove('open');
+    }
+  });
+
+  // =========================
+  // REGISTRAR PEDIDOS EN FIRESTORE
+  // =========================
+  function placeOrder() {
+    if(cart.length === 0){
+      alert('El carrito está vacío.');
+      return;
+    }
+
+    cart.forEach(item => {
+      db.collection('pedidos').add({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(docRef => {
+        item.id = docRef.id;
+      }).catch(error => {
+        console.error("Error al registrar el pedido:", error);
+      });
+    });
+
+    alert('Pedido registrado correctamente!');
+    cart = [];
+    updateCartDisplay();
+    cartPanel.classList.remove('open');
+  }
+
+  // Botón de finalizar pedido
+  const orderBtn = document.createElement('button');
+  orderBtn.textContent = 'Finalizar Pedido';
+  orderBtn.style.background = '#007bff';
+  orderBtn.style.color = 'white';
+  orderBtn.style.padding = '10px';
+  orderBtn.style.border = 'none';
+  orderBtn.style.borderRadius = '6px';
+  orderBtn.style.margin = '10px';
+  orderBtn.style.cursor = 'pointer';
+  orderBtn.addEventListener('click', placeOrder);
+  cartPanel.appendChild(orderBtn);
+
+  // =========================
+  // BUSCADOR DE PRODUCTOS
+  // =========================
+  const searchInput = document.getElementById('search-input');
+  searchInput.addEventListener('input', () => {
+    const filter = searchInput.value.toLowerCase();
+    const products = document.querySelectorAll('.producto');
+    products.forEach(prod => {
+      const name = prod.querySelector('h3').textContent.toLowerCase();
+      if(name.includes(filter)){
+        prod.style.display = '';
+      } else {
+        prod.style.display = 'none';
+      }
     });
   });
-
-  lightboxClose.addEventListener('click', () => lightbox.style.display = 'none');
-  lightboxPrev.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + productImages.length) % productImages.length;
-    lightboxImg.src = productImages[currentIndex].src;
-  });
-  lightboxNext.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % productImages.length;
-    lightboxImg.src = productImages[currentIndex].src;
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === "Escape") lightbox.style.display = 'none';
-    if (e.key === "ArrowLeft") lightboxPrev.click();
-    if (e.key === "ArrowRight") lightboxNext.click();
-  });
 </script>
-
 </body>
 </html>
+
