@@ -317,6 +317,11 @@
   }
   @media screen and (max-width: 768px) {
     .productos-container { grid-template-columns: repeat(2, 1fr); }
+    #cart-panel { width: 100%; right: -100%; border-radius: 0; }
+    #cart-panel.open { right: 0; }
+    .cart-item { font-size: 16px; }
+    #cart-total { font-size: 1.4rem; padding: 12px; }
+    #close-cart { font-size: 2rem; top: 12px; right: 12px; }
   }
   @media screen and (max-width: 480px) {
     .productos-container { grid-template-columns: 1fr; }
