@@ -43,7 +43,7 @@
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-top: 45px; /* espacio por el banner fijo */
+    margin-top: 45px;
   }
 
   #cart-icon {
@@ -98,9 +98,10 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.05) inset;
   }
 
-  .productos {
+  /* GRILLA DE PRODUCTOS */
+  .productos-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+    grid-template-columns: repeat(6, 1fr);
     gap: 20px;
     padding: 20px;
     max-width: 1200px;
@@ -116,19 +117,20 @@
     position: relative;
   }
 
-  /* Zoom imágenes */
   .producto img {
     max-width: 100%;
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    object-fit: contain;
+    max-height: 150px;
+    background-color: #f9f9f9;
   }
   .producto img:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
   }
 
-  /* Etiquetas */
   .etiqueta {
     position:absolute;
     top:10px;
@@ -148,7 +150,6 @@
     font-size: 1.3rem;
   }
 
-  /* Selector cantidad */
   .cantidad-selector {
     display:flex;
     justify-content:center;
@@ -173,7 +174,6 @@
     padding:6px 4px;
   }
 
-  /* Botón agregar al carrito verde */
   button.agregar-carrito {
     background: #28a745;
     color: white;
@@ -186,17 +186,16 @@
     font-size: 1rem;
     transition: background 0.3s ease;
   }
-
   button.agregar-carrito:hover {
     background: #218838;
   }
 
-  /* Panel lateral del carrito (ahora más grande) */
+  /* PANEL DEL CARRITO */
   #cart-panel {
     position: fixed;
     top: 0;
-    right: -450px; /* ancho inicial oculto */
-    width: 450px;   /* ancho aumentado */
+    right: -450px;
+    width: 450px;
     height: 100%;
     background: #fff;
     box-shadow: -2px 0 8px rgba(0,0,0,0.3);
@@ -207,7 +206,6 @@
     border-radius: 8px 0 0 8px;
     overflow: hidden;
   }
-
   #cart-panel.open { right: 0; }
 
   #cart-title {
@@ -239,11 +237,7 @@
     font-size: 14px;
   }
 
-  .cart-item span {
-    flex: 1;
-    font-weight: 500;
-    color: #333;
-  }
+  .cart-item span { flex: 1; font-weight: 500; color: #333; }
 
   .cart-item button {
     background: #FF4C4C;
@@ -255,7 +249,6 @@
     color: white;
     transition: background 0.3s;
   }
-
   .cart-item button:hover { background: #d93b3b; }
 
   #cart-total {
@@ -279,7 +272,6 @@
     z-index: 10;
   }
 
-  /* Imagen voladora */
   .flying-img {
     position: absolute;
     width: 50px;
@@ -304,10 +296,8 @@
     vertical-align: middle;
     transition: color 0.3s ease;
   }
-
   footer a:hover { color: #e65b2a; }
 
-  /* Botón flotante WhatsApp */
   .whatsapp-float {
     position: fixed;
     bottom: 20px;
@@ -319,6 +309,17 @@
     border-radius: 50%;
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     z-index: 3000;
+  }
+
+  /* RESPONSIVE PARA MÓVILES */
+  @media screen and (max-width: 1200px) {
+    .productos-container { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media screen and (max-width: 768px) {
+    .productos-container { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media screen and (max-width: 480px) {
+    .productos-container { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -632,7 +633,7 @@
 </footer>
 
 <!-- Botón flotante de WhatsApp -->
-<a class="whatsapp-float" href="https://wa.me/50360014234" target="_blank" rel="noopener" aria-label="WhatsApp chat">
+<a class="whatsapp-float" href="https://wa.me/50371523657" target="_blank" rel="noopener" aria-label="WhatsApp chat">
   <i class="fab fa-whatsapp"></i>
 </a>
 
@@ -640,21 +641,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-  // =========================
-  // CONFIGURACIÓN FIREBASE
-  // =========================
-  const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "TU_AUTH_DOMAIN",
-    projectId: "TU_PROJECT_ID",
-    storageBucket: "TU_STORAGE_BUCKET",
-    messagingSenderId: "TU_MESSAGING_SENDER_ID",
-    appId: "TU_APP_ID"
-  };
-  
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
   // =========================
   // CARRITO DE COMPRAS
   // =========================
@@ -704,9 +690,7 @@
       flyingImg.style.width = '30px';
     }, 10);
 
-    setTimeout(() => {
-      flyingImg.remove();
-    }, 800);
+    setTimeout(() => flyingImg.remove(), 800);
 
     // Agregar al carrito
     const existingItem = cart.find(item => item.name === name);
@@ -719,24 +703,15 @@
   }
 
   function removeCartItem(index) {
-    // Borrar también en Firestore si existe
-    const item = cart[index];
-    if(item.id){
-      db.collection('pedidos').doc(item.id).delete();
-    }
     cart.splice(index, 1);
     updateCartDisplay();
   }
 
   // Abrir y cerrar carrito
-  cartIcon.addEventListener('click', () => {
-    cartPanel.classList.add('open');
-  });
-  closeCartBtn.addEventListener('click', () => {
-    cartPanel.classList.remove('open');
-  });
+  cartIcon.addEventListener('click', () => cartPanel.classList.add('open'));
+  closeCartBtn.addEventListener('click', () => cartPanel.classList.remove('open'));
 
-  // Cerrar al hacer clic fuera del panel
+  // Cerrar carrito solo al hacer clic fuera
   document.addEventListener('click', (e) => {
     if (!cartPanel.contains(e.target) && e.target !== cartIcon) {
       cartPanel.classList.remove('open');
@@ -744,7 +719,7 @@
   });
 
   // =========================
-  // REGISTRAR PEDIDOS EN FIRESTORE
+  // FINALIZAR PEDIDO POR WHATSAPP
   // =========================
   function placeOrder() {
     if(cart.length === 0){
@@ -752,26 +727,27 @@
       return;
     }
 
+    let mensaje = 'Nuevo pedido:%0A';
+    let total = 0;
+
     cart.forEach(item => {
-      db.collection('pedidos').add({
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(docRef => {
-        item.id = docRef.id;
-      }).catch(error => {
-        console.error("Error al registrar el pedido:", error);
-      });
+      mensaje += `${item.name} x ${item.quantity} - $${item.price*item.quantity}%0A`;
+      total += item.price*item.quantity;
     });
 
-    alert('Pedido registrado correctamente!');
+    mensaje += `Total: $${total.toFixed(2)}`;
+
+    const numeroWhatsapp = '50371523657'; // tu número de WhatsApp sin + ni espacios
+    const url = `https://wa.me/${numeroWhatsapp}?text=${mensaje}`;
+
+    window.open(url, '_blank');
+
     cart = [];
     updateCartDisplay();
     cartPanel.classList.remove('open');
   }
 
-  // Botón de finalizar pedido
+  // Botón Finalizar Pedido
   const orderBtn = document.createElement('button');
   orderBtn.textContent = 'Finalizar Pedido';
   orderBtn.style.background = '#007bff';
@@ -788,19 +764,69 @@
   // BUSCADOR DE PRODUCTOS
   // =========================
   const searchInput = document.getElementById('search-input');
-  searchInput.addEventListener('input', () => {
-    const filter = searchInput.value.toLowerCase();
-    const products = document.querySelectorAll('.producto');
-    products.forEach(prod => {
-      const name = prod.querySelector('h3').textContent.toLowerCase();
-      if(name.includes(filter)){
+  if(searchInput){
+    searchInput.addEventListener('input', () => {
+      const filter = searchInput.value.toLowerCase();
+      const products = document.querySelectorAll('.producto');
+      products.forEach(prod => {
+        const name = prod.querySelector('h3').textContent.toLowerCase();
+        prod.style.display = name.includes(filter) ? '' : 'none';
+      });
+    });
+  }
+
+  // =========================
+  // FILTRADO POR CATEGORÍAS
+  // =========================
+  function filtrarProductos(categoria) {
+    document.getElementById('contacto').style.display = 'none';
+    document.getElementById('otros').style.display = 'none';
+
+    const productos = document.querySelectorAll('.producto');
+    productos.forEach(prod => {
+      if(categoria === 'todos') {
+        prod.style.display = '';
+      } else if(prod.classList.contains(categoria)) {
         prod.style.display = '';
       } else {
         prod.style.display = 'none';
       }
     });
+  }
+
+  function mostrarContacto() {
+    document.getElementById('contacto').style.display = 'block';
+    document.getElementById('otros').style.display = 'none';
+    filtrarProductos('todos');
+  }
+
+  function mostrarOtros() {
+    document.getElementById('otros').style.display = 'block';
+    document.getElementById('contacto').style.display = 'none';
+    filtrarProductos('todos');
+  }
+
+  // =========================
+  // LIGHTBOX PARA IMÁGENES
+  // =========================
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxClose = document.getElementById('lightbox-close');
+
+  document.querySelectorAll('.producto img').forEach(img => {
+    img.addEventListener('click', () => {
+      lightbox.style.display = 'flex';
+      lightboxImg.src = img.src;
+    });
+  });
+
+  lightboxClose.addEventListener('click', () => {
+    lightbox.style.display = 'none';
+  });
+
+  lightbox.addEventListener('click', (e) => {
+    if(e.target === lightbox) lightbox.style.display = 'none';
   });
 </script>
 </body>
 </html>
-
